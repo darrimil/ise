@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sgtdomains"
+version = "0.1.0"
+description = "Learn campus/branch subnets from Catalyst Center, Meraki, ISE or CSV, correlate with observed flows, and build ISE SXP/SGT domain filters"
+requires-python = ">=3.9"
+dependencies = ["requests>=2.28", "PyYAML>=6", "click>=8"]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+sgtdomains = "sgtdomains.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,37 @@
+workdir: ./work
+sources:
+  - {type: csv, name: lab-csv, path: examples/subnets.csv}
+  # - type: catalyst_center
+  #   url: https://catc.example.com
+  #   username: admin
+  #   password_env: CATC_PASSWORD
+  #   verify: false
+  # - type: meraki
+  #   api_key_env: MERAKI_API_KEY
+  #   org_ids: []            # empty = all orgs the key can see
+  #   switch_l3: false       # per-switch SVI calls; slow at scale
+  # - type: ise
+  #   url: https://ise.example.com:9060
+  #   username: ers-admin
+  #   password_env: ISE_PASSWORD
+  #   verify: false
+flows:
+  internal_ranges: [10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16]
+  gap_prefixlen: 24
+  min_flows: 1
+  # columns: {src: "Source IP", dst: "Destination IP", bytes: "Bytes", flows: "Flows"}
+domains:
+  group_by: site            # site | source | label | single
+  include_status: [active]  # add idle to include learned-but-unseen subnets
+  default_domain: DEFAULT
+  default_sgt: null         # null = report unmatched subnets in unassigned.csv
+  sgt_rules:                # first match wins
+    - {match: {label: "(?i)voice|phone"}, sgt: Voice}
+    - {match: {label: "(?i)guest"}, sgt: Guests}
+    - {match: {label: "(?i)iot|camera"}, sgt: IoT}
+    - {match: {label: "(?i)corp|data|user"}, sgt: Employees}
+ise:
+  url: https://ise.example.com:9060
+  username: ers-admin
+  password_env: ISE_PASSWORD
+  verify: false
